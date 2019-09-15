@@ -1,0 +1,17 @@
+setwd("C:/Users/celib/Desktop/PRÁCTICAS/ram1 KO vs. overexpressed/Quantification of colonization")
+
+#read csv
+mydata<-read.csv("data for boxplots.csv", sep=";", dec=",")
+
+#change column names
+names(mydata)[1] <- "genotype"
+
+#order structures
+mydata$structure<-factor(mydata$structure, levels = c("int_hyphae", "arbuscules", "vesicles"))
+
+#boxplots
+library(ggplot2)
+ggplot(data = mydata, 
+       aes(x=structure, y=count)) + 
+  geom_boxplot(aes(fill=genotype)) +
+  geom_point(position=position_dodge(width=0.75),aes(group=genotype))
