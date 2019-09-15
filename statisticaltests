@@ -1,0 +1,82 @@
+#######t tests#######
+#get rid of negative controls, we don't want them for the comparison
+merged.rawdata.meanCq=merged.rawdata.meanCq[!merged.rawdata.meanCq$treatment=="negative",]
+
+#install.packages("multcompView")
+library(multcompView)
+
+#####LTP#####
+#make a smaller dataframe with only LTP data
+merged.rawdata.meanCq.LTP<- merged.rawdata.meanCq[merged.rawdata.meanCq$gene=="LTP",]
+
+#Is my data normal? 
+#the Shapiro test compares our data to a normal distribution. 
+#A p-value<0.05 tells us that there is a significant difference between 
+#our data and a normal distribution, therefore our data is not normal. 
+shapiro.test(merged.rawdata.meanCq.LTP$dCT)
+#It's not
+
+#To transform my data and make it normal, I take the log
+merged.rawdata.meanCq.LTP$logdCT <- log(merged.rawdata.meanCq.LTP$dCT)
+
+#t-test
+t.test(logdCT~treatment, merged.rawdata.meanCq.LTP)
+
+
+
+#####antiSTR1#####
+#make a smaller dataframe with only antiSTR1 data:
+merged.rawdata.meanCq.antiSTR1<- merged.rawdata.meanCq[merged.rawdata.meanCq$gene=="antiSTR1",]
+
+#Is my data normal? 
+#the Shapiro test compares our data to a normal distribution. 
+#A p-value<0.05 tells us that there is a significant difference between 
+#our data and a normal distribution, therefore our data is not normal. 
+shapiro.test(merged.rawdata.meanCq.antiSTR1$dCT)
+#we can't reject the hypothesis that it is normal. I normalize it either way
+
+#To transform my data and make it normal, I take the log
+merged.rawdata.meanCq.antiSTR1$logdCT <- log(merged.rawdata.meanCq.antiSTR1$dCT)
+
+#t-test:
+t.test(logdCT~treatment, merged.rawdata.meanCq.antiSTR1)
+
+
+
+#####STR1#####
+#make a smaller dataframe with only STR1 data:
+merged.rawdata.meanCq.STR1<- merged.rawdata.meanCq[merged.rawdata.meanCq$gene=="STR1",]
+
+#Is my data normal? 
+#the Shapiro test compares our data to a normal distribution. 
+#A p-value<0.05 tells us that there is a significant difference between 
+#our data and a normal distribution, therefore our data is not normal. 
+shapiro.test(merged.rawdata.meanCq.STR1$dCT)
+#It' is's not
+
+#To transform my data and make it normal, I take the log
+merged.rawdata.meanCq.STR1$logdCT <- log(merged.rawdata.meanCq.STR1$dCT)
+
+
+#t-test
+t.test(dCT~treatment, merged.rawdata.meanCq.STR1)
+
+
+
+#####RAM1#####
+#make a smaller dataframe with only RAM1 data:
+merged.rawdata.meanCq.RAM1<- merged.rawdata.meanCq[merged.rawdata.meanCq$gene=="RAM1",]
+
+#Is my data normal? 
+#the Shapiro test compares our data to a normal distribution. 
+#A p-value<0.05 tells us that there is a significant difference between 
+#our data and a normal distribution, therefore our data is not normal. 
+shapiro.test(merged.rawdata.meanCq.RAM1$dCT)
+#It' is's not
+
+#To transform my data and make it normal, I take the log
+merged.rawdata.meanCq.RAM1$logdCT <- log(merged.rawdata.meanCq.RAM1$dCT)
+
+
+#t.test
+t.test(dCT~treatment, merged.rawdata.meanCq.RAM1)
