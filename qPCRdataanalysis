@@ -1,0 +1,52 @@
+setwd("C:/Users/celib/Desktop/PRÁCTICAS/qPCR ltp-antistr1-new str1 primers/qPCR/adjusted treshhold")
+library(tidyverse)
+
+rawdata<-read.csv("Cq.csv", dec=",", sep=";")
+
+#to order the genes
+rawdata$gene<-factor(rawdata$gene, levels = c("UBI","LTP","antiSTR1", "STR1", "RAM1"))
+
+#make values numerical
+rawdata$sample<-as.factor(rawdata$sample) 
+rawdata$tech.rep<-as.factor(rawdata$tech.rep)
+rawdata$replicate<-as.factor(rawdata$replicate)
+
+
+##RAW Cq VALUE PLOTS
+mCq<-rawdata%>%group_by(gene,sample)%>%summarize(mCq=mean(Cq,na.rm=T))
+rawdata.meanCq<-left_join(rawdata,mCq)
+
+ggplot(rawdata.meanCq, aes(treatment, mCq, colour = replicate)) +
+  geom_point()+
+  facet_wrap(~gene, nrow = 5, strip.position = "right")+
+  theme(axis.text.x=element_text(angle=90),          # labels in vertical position
+        panel.border=element_rect(size=.1, fill=NA)) + # border, with no fill
+  theme(strip.text = element_text(face = "italic")) #make gene names italic
+
+
+
+#dCT VALUE PLOTS
+##Calculation of dCt values relative to mean of Ubi gene, per tech rep
+
+ubi <- rawdata.meanCq%>% filter(gene == "UBI") %>% group_by(sample) %>% summarize(m = mean(Cq, na.rm = T ) )
+rawdata.meanCq <- left_join(rawdata.meanCq,ubi) #calculated Cq means per bio rep are assigned to each Cq
+
+dCT <- mutate(rawdata.meanCq, dCT = 2^(rawdata.meanCq$m - rawdata.meanCq$Cq)) 
+rawdata.meanCq<-left_join(rawdata.meanCq,dCT)
+
+mdCT<-rawdata.meanCq%>%group_by(gene,sample)%>%summarize(mdCT=mean(dCT,na.rm=T))
+merged.rawdata.meanCq<-left_join(rawdata.meanCq,mdCT)
+
+ggplot(merged.rawdata.meanCq, aes(treatment, mdCT, colour=replicate)) +
+  geom_point()+
+  facet_wrap(~gene, nrow = 5, strip.position = "right")+
+  scale_y_log10()+
+  theme(axis.text.x=element_text(angle=90),          # labels in vertical position
+        panel.border=element_rect(size=.1, fill=NA)) + # border, with no fill
+  theme(strip.text = element_text(face = "italic")) #genes in italics
+
+
+
+
+
+
