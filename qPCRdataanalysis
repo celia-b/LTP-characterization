@@ -1,4 +1,4 @@
-setwd("C:/Users/celib/Desktop/PRÁCTICAS/qPCR ltp-antistr1-new str1 primers/qPCR/adjusted treshhold")
+setwd("PATH")
 library(tidyverse)
 
 rawdata<-read.csv("Cq.csv", dec=",", sep=";")
